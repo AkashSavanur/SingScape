@@ -35,7 +35,7 @@ const ManageAttractionsScreen = () => {
     const fetchAttractions = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const res = await fetch("https://singscape.onrender.com/attractions", {
+        const res = await fetch("http://0.0.0.0:8081/attractions", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -68,7 +68,7 @@ const ManageAttractionsScreen = () => {
     if (confirm.isConfirmed) {
       try {
         const token = localStorage.getItem("access_token");
-        const res = await fetch(`https://singscape.onrender.com/attractions/${id}`, {
+        const res = await fetch(`http://0.0.0.0:8081/attractions/${id}`, {
           method: "DELETE",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -102,7 +102,7 @@ const ManageAttractionsScreen = () => {
   const handleSave = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const res = await fetch("https://singscape.onrender.com/attractions", {
+      const res = await fetch("http://0.0.0.0:8081/attractions", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -128,7 +128,7 @@ const ManageAttractionsScreen = () => {
   const handleAddAttraction = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const res = await fetch("https://singscape.onrender.com/attractions", {
+      const res = await fetch("http://0.0.0.0:8081/attractions", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

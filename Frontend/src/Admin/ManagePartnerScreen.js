@@ -40,7 +40,7 @@ const ManagePartnersScreen = () => {
     const fetchPartners = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await fetch("https://singscape.onrender.com/partners", {
+        const response = await fetch("http://0.0.0.0:8081/partners", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -73,7 +73,7 @@ const ManagePartnersScreen = () => {
   const handleSavePartner = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("https://singscape.onrender.com/partners", {
+      const response = await fetch("http://0.0.0.0:8081/partners", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -100,7 +100,7 @@ const ManagePartnersScreen = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `https://singscape.onrender.com/partners/${partnerId}`,
+        `http://0.0.0.0:8081/partners/${partnerId}`,
         {
           method: "DELETE",
           headers: {
@@ -122,7 +122,7 @@ const ManagePartnersScreen = () => {
   const handleAddPartner = async () => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("https://singscape.onrender.com/partners", {
+      const response = await fetch("http://0.0.0.0:8081/partners", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

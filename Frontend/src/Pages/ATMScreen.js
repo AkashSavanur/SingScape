@@ -13,6 +13,7 @@ import {
   Button,
 } from "@mui/material";
 import Navbar from "../Components/Navbar";
+import LocationOnIcon from '@mui/icons-material/LocationOn';
 
 export default function ATMScreen() {
   const location = useLocation();
@@ -30,7 +31,7 @@ export default function ATMScreen() {
     try {
       const token = localStorage.getItem("access_token");
       const res = await fetch(
-        `https://singscape.onrender.com/external/nearby-atms?postalCode=${postalCode}&radius=${radius}`,
+        `http://0.0.0.0:8081/external/nearby-atms?postalCode=${postalCode}&radius=${radius}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -103,9 +104,23 @@ export default function ATMScreen() {
                     <Typography variant="h6" fontWeight="bold">
                       {atm.name}
                     </Typography>
+                    <Box display="flex" alignItems="center" gap={1}>
                     <Typography variant="body2" color="textSecondary">
                       {atm.vicinity}
                     </Typography>
+                    <Button
+                        size="small"
+                        variant="outlined"
+                        color="primary"
+                        href={`https://www.google.com/maps/search/?api=1&query=${atm.lat},${atm.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        sx={{ textTransform: "none", fontSize: "0.7rem" }}
+                        startIcon={<LocationOnIcon />}
+                      >
+                        View on Map
+                      </Button>
+                      </Box>
                     <Divider sx={{ my: 1 }} />
                   </CardContent>
                 </Card>

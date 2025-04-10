@@ -26,7 +26,7 @@ const ManageReviewScreen = () => {
     const fetchReviews = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await fetch("https://singscape.onrender.com/reviews", {
+        const response = await fetch("http://0.0.0.0:8081/reviews", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -50,7 +50,7 @@ const ManageReviewScreen = () => {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `https://singscape.onrender.com/reviews/${id}/flag`,
+        `http://0.0.0.0:8081/reviews/${id}/flag`,
         {
           method: "PATCH",
           headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
@@ -81,7 +81,7 @@ const ManageReviewScreen = () => {
 
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch(`https://singscape.onrender.com/reviews/${id}`, {
+      const response = await fetch(`http://0.0.0.0:8081/reviews/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,

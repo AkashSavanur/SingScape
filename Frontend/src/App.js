@@ -82,7 +82,7 @@ function AdminRoute({ element }) {
 
         if (user) {
           const token = localStorage.getItem("access_token");
-          const res = await fetch(`https://singscape.onrender.com/users/${user.id}`, {
+          const res = await fetch(`http://0.0.0.0:8081/users/${user.id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",

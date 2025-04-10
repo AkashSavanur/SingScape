@@ -46,7 +46,7 @@ export default function AttractionsScreen() {
       if (user?.id) {
         try {
           const token = localStorage.getItem("access_token");
-          const res = await fetch(`https://singscape.onrender.com/users/${user.id}`, {
+          const res = await fetch(`http://0.0.0.0:8081/users/${user.id}`, {
             headers: {
               Authorization: `Bearer ${token}`,
               "Content-Type": "application/json",
@@ -71,7 +71,7 @@ export default function AttractionsScreen() {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `https://singscape.onrender.com/attractions/${attractionId}`,
+        `http://0.0.0.0:8081/attractions/${attractionId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -95,7 +95,7 @@ export default function AttractionsScreen() {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `https://singscape.onrender.com/reviews/attraction/${attractionId}`,
+        `http://0.0.0.0:8081/reviews/attraction/${attractionId}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -128,7 +128,7 @@ export default function AttractionsScreen() {
       try {
         const token = localStorage.getItem("access_token");
         const response = await fetch(
-          `https://singscape.onrender.com/ticket-types/${attractionId}`,
+          `http://0.0.0.0:8081/ticket-types/${attractionId}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -195,7 +195,7 @@ export default function AttractionsScreen() {
 
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("https://singscape.onrender.com/booking/confirm", {
+      const response = await fetch("http://0.0.0.0:8081/booking/confirm", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -250,7 +250,7 @@ export default function AttractionsScreen() {
 
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("https://singscape.onrender.com/reviews", {
+      const response = await fetch("http://0.0.0.0:8081/reviews", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -286,7 +286,7 @@ export default function AttractionsScreen() {
     try {
       const token = localStorage.getItem("access_token");
       const response = await fetch(
-        `https://singscape.onrender.com/reviews/${reviewId}`,
+        `http://0.0.0.0:8081/reviews/${reviewId}`,
         {
           method: "PUT",
           headers: {
@@ -327,7 +327,7 @@ export default function AttractionsScreen() {
       try {
         const token = localStorage.getItem("access_token");
         const response = await fetch(
-          `https://singscape.onrender.com/reviews/${reviewId}`,
+          `http://0.0.0.0:8081/reviews/${reviewId}`,
           {
             method: "DELETE",
             headers: {

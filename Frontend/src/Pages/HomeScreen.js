@@ -26,7 +26,7 @@ export default function HomeScreen() {
     const fetchAttractions = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await axios.get("https://singscape.onrender.com/attractions", {
+        const response = await axios.get("http://0.0.0.0:8081/attractions", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -53,7 +53,7 @@ export default function HomeScreen() {
 
         const token = localStorage.getItem("access_token");
 
-        const checkRes = await fetch(`https://singscape.onrender.com/users/${user.id}`, {
+        const checkRes = await fetch(`http://0.0.0.0:8081/users/${user.id}`, {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export default function HomeScreen() {
         });
 
         if (checkRes.status === 404) {
-          const createRes = await fetch("https://singscape.onrender.com/users", {
+          const createRes = await fetch("http://0.0.0.0:8081/users", {
             method: "POST",
             headers: {
               Authorization: `Bearer ${token}`,

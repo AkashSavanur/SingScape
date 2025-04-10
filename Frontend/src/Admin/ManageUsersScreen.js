@@ -29,7 +29,7 @@ const ManageUsersScreen = () => {
     const fetchUsers = async () => {
       try {
         const token = localStorage.getItem("access_token");
-        const response = await fetch("https://singscape.onrender.com/users", {
+        const response = await fetch("http://0.0.0.0:8081/users", {
           headers: {
             Authorization: `Bearer ${token}`,
             "Content-Type": "application/json",
@@ -54,7 +54,7 @@ const ManageUsersScreen = () => {
 
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("https://singscape.onrender.com/users", {
+      const response = await fetch("http://0.0.0.0:8081/users", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -91,7 +91,7 @@ const ManageUsersScreen = () => {
   const handleSaveEdit = async (user) => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch("https://singscape.onrender.com/users", {
+      const response = await fetch("http://0.0.0.0:8081/users", {
         method: "POST",
         headers: {
           Authorization: `Bearer ${token}`,

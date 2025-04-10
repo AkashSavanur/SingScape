@@ -29,7 +29,7 @@ export default function ProfileScreen() {
       try {
         const token = localStorage.getItem("access_token");
         const response = await fetch(
-          `https://singscape.onrender.com/users/${user.id}`,
+          `http://0.0.0.0:8081/users/${user.id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -55,7 +55,7 @@ export default function ProfileScreen() {
           try {
             const token = localStorage.getItem("access_token");
             const bookingResponse = await fetch(
-              `https://singscape.onrender.com/booking/user/${user.id}/details`
+              `http://0.0.0.0:8081/booking/user/${user.id}/details`
               ,
               {
                 headers: {
