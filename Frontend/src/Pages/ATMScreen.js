@@ -30,7 +30,7 @@ export default function ATMScreen() {
     try {
       const token = localStorage.getItem("access_token");
       const res = await fetch(
-        `http://172.20.10.3:8080/external/nearby-atms?postalCode=${postalCode}&radius=${radius}`,
+        `https://singscape.onrender.com/external/nearby-atms?postalCode=${postalCode}&radius=${radius}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

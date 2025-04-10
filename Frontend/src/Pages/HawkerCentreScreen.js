@@ -31,7 +31,7 @@ export default function HawkerCentreScreen() {
     try {
       const token = localStorage.getItem("access_token");
       const res = await fetch(
-        `http://172.20.10.3:8080/external/hawker-centres?postalCode=${postalCode}&radius=${radius}`,
+        `https://singscape.onrender.com/external/hawker-centres?postalCode=${postalCode}&radius=${radius}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

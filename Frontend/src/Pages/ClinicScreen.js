@@ -31,7 +31,7 @@ export default function ClinicScreen() {
     try {
       const token = localStorage.getItem("access_token");
       const res = await fetch(
-        `http://172.20.10.3:8080/external/nearby-healthcare?postalCode=${postalCode}&radius=${radius}`,
+        `https://singscape.onrender.com/external/nearby-healthcare?postalCode=${postalCode}&radius=${radius}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
