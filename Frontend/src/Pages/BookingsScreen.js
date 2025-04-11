@@ -4,6 +4,8 @@ import supabase from "../helper/SupabaseClient";
 import Navbar from "../Components/Navbar";
 import { Divider } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import aiLoadingAnimation from "../assets/ai-loader.json";
+import Lottie from "lottie-react";
 
 export default function BookingsPage() {
   const [bookings, setBookings] = useState([]);
@@ -49,7 +51,19 @@ export default function BookingsPage() {
       <Box mt={4} p={4} sx={{ backgroundColor: "#fff", flex: 1 }}>
         <h2>Your Bookings</h2>
         {bookings.length === 0 ? (
-          <p>Loading...</p>
+          <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Lottie
+            animationData={aiLoadingAnimation}
+            loop={true}
+            style={{ width: 300 }}
+          />
+        </div>
         ) : (
           [...bookings]
             .sort((a, b) => new Date(b.bookingTime) - new Date(a.bookingTime)) // sort descending

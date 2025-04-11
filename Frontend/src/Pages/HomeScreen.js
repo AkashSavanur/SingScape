@@ -22,6 +22,15 @@ export default function HomeScreen() {
   const [currentPage, setCurrentPage] = useState(1);
   const attractionsPerPage = 8;
 
+  const CATEGORY_GROUPS = {
+    "All": [],
+    "Nature": ["Park", "Nature Reserve", "Nature Trail", "Garden"],
+    "Museums & Education": ["Museum", "Science Museum"],
+    "Entertainment": ["Theme Park", "Aquarium", "Observation Wheel", "Entertainment District", "Wildlife Park"],
+    "Cultural & Historical": ["Historical Hotel", "Landmark"],
+    "Shopping & Food": ["Shopping and Leisure Complex", "Hawker Centre"],
+  };
+
   useEffect(() => {
     const fetchAttractions = async () => {
       try {
@@ -32,7 +41,6 @@ export default function HomeScreen() {
             "Content-Type": "application/json",
           },
         });
-        console.log(response.data);
         setAttractionsData(response.data);
       } catch (error) {
         console.error("Failed to fetch attractions:", error);
@@ -82,13 +90,6 @@ export default function HomeScreen() {
           } else {
             console.log("Profile created successfully");
           }
-        } else if (checkRes.ok) {
-          console.log("User profile already exists.");
-        } else {
-          console.error(
-            "Unexpected response while checking profile:",
-            checkRes.status
-          );
         }
       } catch (err) {
         console.error("Error during profile check/creation:", err.message);
@@ -98,16 +99,18 @@ export default function HomeScreen() {
     fetchUserAndCreateAccount();
   }, []);
 
-  const filteredAttractions = attractionsData.filter(
-    (attraction) =>
-      attraction.name?.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (selectedCategory === "All" || attraction.type === selectedCategory)
-  );
+  const filteredAttractions = attractionsData.filter((attraction) => {
+    const nameMatch = attraction.name?.toLowerCase().includes(searchQuery.toLowerCase());
+    const categoryMatch =
+      selectedCategory === "All" ||
+      CATEGORY_GROUPS[selectedCategory]?.includes(attraction.type);
+    return nameMatch && categoryMatch;
+  });
 
   const sortedAttractions = [...filteredAttractions].sort((a, b) => {
-    if (sortBy === "Price") return a.price - b.price; // will be ignored if price not present
-    if (sortBy === "Rating") return b.rating - a.rating;
-    if (sortBy === "Location") return a.location.localeCompare(b.location);
+    if (sortBy === "Rating") return (b.rating || 0) - (a.rating || 0);
+    if (sortBy === "Alphabetical") return a.name.localeCompare(b.name);
+    if (sortBy === "-Alphabetical") return b.name.localeCompare(a.name);
     return 0;
   });
 
@@ -118,9 +121,7 @@ export default function HomeScreen() {
   );
 
   return (
-    <div
-      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
-    >
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Navbar />
 
       <main style={{ flex: 1, padding: "24px", backgroundColor: "#f4f4f4" }}>
@@ -144,17 +145,17 @@ export default function HomeScreen() {
 
             <Grid item xs={6} sm={3}>
               <FormControl fullWidth variant="outlined">
-                <InputLabel>Filter by</InputLabel>
+                <InputLabel>Category</InputLabel>
                 <Select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
-                  label="Filter by"
+                  label="Category"
                 >
-                  <MenuItem value="All">All</MenuItem>
-                  <MenuItem value="Theme Park">Theme Park</MenuItem>
-                  <MenuItem value="Zoo">Zoo</MenuItem>
-                  <MenuItem value="Museum">Museum</MenuItem>
-                  <MenuItem value="Viewing">Viewing</MenuItem>
+                  {Object.keys(CATEGORY_GROUPS).map((cat) => (
+                    <MenuItem key={cat} value={cat}>
+                      {cat}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -169,7 +170,8 @@ export default function HomeScreen() {
                 >
                   <MenuItem value="None">None</MenuItem>
                   <MenuItem value="Rating">Rating</MenuItem>
-                  <MenuItem value="Location">Location</MenuItem>
+                  <MenuItem value="Alphabetical">A-Z</MenuItem>
+                  <MenuItem value="-Alphabetical">Z-A</MenuItem>
                 </Select>
               </FormControl>
             </Grid>
@@ -189,13 +191,7 @@ export default function HomeScreen() {
               <AttractionCard key={index} attraction={attraction} />
             ))
           ) : (
-            <p
-              style={{
-                textAlign: "center",
-                fontSize: "18px",
-                fontWeight: "bold",
-              }}
-            >
+            <p style={{ textAlign: "center", fontSize: "18px", fontWeight: "bold" }}>
               No attractions found.
             </p>
           )}

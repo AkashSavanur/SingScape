@@ -5,16 +5,15 @@ import Swal from "sweetalert2";
 import {
   Box,
   Typography,
-  Card,
-  CardContent,
-  Container,
-  CircularProgress,
-  Grid,
-  Divider,
-  TextField,
   Button,
 } from "@mui/material";
 
+import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
+import SupportAgentIcon from "@mui/icons-material/SupportAgent";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import ExitToAppIcon from "@mui/icons-material/ExitToApp";
+import LoginIcon from "@mui/icons-material/Login";
+import AppRegistrationIcon from "@mui/icons-material/AppRegistration";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -39,7 +38,6 @@ const Navbar = () => {
           });
           if (res.ok) {
             const profileData = await res.json();
-            console.log("data" + profileData.is_admin);
             setProfile(profileData);
           } else {
             console.error("Failed to fetch profile");
@@ -102,11 +100,7 @@ const Navbar = () => {
       setAuthUser(null);
       setProfile(null);
       localStorage.removeItem("access_token");
-      Swal.fire(
-        "Signed out!",
-        "You have been successfully signed out.",
-        "success"
-      );
+      Swal.fire("Signed out!", "You have been successfully signed out.", "success");
       navigate("/login");
     }
   };
@@ -115,8 +109,8 @@ const Navbar = () => {
     <header
       style={{
         position: "sticky",
-        backgroundColor: "#fff",
-        color: "black",
+        backgroundColor: "#00002a",
+        color: "white",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
@@ -124,82 +118,54 @@ const Navbar = () => {
         fontSize: "32px",
         fontWeight: "bold",
         boxShadow: "0 4px 8px rgba(0, 0, 0, 0.1)",
+        zIndex: 1000,
       }}
     >
       <span onClick={() => navigate("/home")} style={{ cursor: "pointer" }}>
         SingScape
       </span>
 
-      <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
+      <Box display="flex" gap={2} alignItems="center">
         {profile?.is_admin && (
-          <button style={buttonStyle} onClick={() => navigate("/admin")}>
-            Admin
-          </button>
+          <HoverButton onClick={() => navigate("/admin")} icon={<AdminPanelSettingsIcon />} label="Admin" />
         )}
 
-        <button
-          style={buttonStyle}
-          onClick={() => navigate("/customer-support")}
-        >
-          Customer Support
-        </button>
+        <HoverButton onClick={() => navigate("/customer-support")} icon={<SupportAgentIcon />} label="Support" />
 
         {authUser ? (
           <>
-            <button
-              style={filledButtonStyle}
-              onMouseOver={(e) => (e.target.style.backgroundColor = "#333")}
-              onMouseOut={(e) => (e.target.style.backgroundColor = "black")}
-              onClick={() => navigate("/profile")}
-            >
-              Profile
-            </button>
-            <button style={buttonStyle} onClick={handleSignOut}>
-              Sign Out
-            </button>
+            <HoverButton onClick={() => navigate("/profile")} icon={<AccountCircleIcon />} label="Profile" />
+            <HoverButton onClick={handleSignOut} icon={<ExitToAppIcon />} label="Sign Out" />
           </>
         ) : (
           <>
-            <button style={buttonStyle} onClick={() => navigate("/login")}>
-              Login
-            </button>
-            <button
-              style={filledButtonStyle}
-              onMouseOver={(e) => (e.target.style.backgroundColor = "#333")}
-              onMouseOut={(e) => (e.target.style.backgroundColor = "black")}
-              onClick={() => navigate("/signup")}
-            >
-              Sign Up
-            </button>
+            <HoverButton onClick={() => navigate("/login")} icon={<LoginIcon />} label="Login" />
+            <HoverButton onClick={() => navigate("/signup")} icon={<AppRegistrationIcon />} label="Sign Up" />
           </>
         )}
-      </div>
+      </Box>
     </header>
   );
 };
 
-const buttonStyle = {
-  backgroundColor: "transparent",
-  border: "2px solid black",
-  padding: "8px 16px",
-  fontSize: "16px",
-  fontWeight: "bold",
-  cursor: "pointer",
-  borderRadius: "5px",
-  transition: "all 0.3s ease",
-  color: "black",
-};
+// Reusable icon + hover text button
+const HoverButton = ({ icon, label, onClick }) => (
+  <Button
+    onClick={onClick}
+    startIcon={icon}
+    sx={{
+      color: "white",
+      textTransform: "none",
+      fontWeight: "bold",
+      backgroundColor: "transparent",
+      "&:hover": {
+        backgroundColor: "rgba(255,255,255,0.1)",
+      },
+    }}
+  >
+    {label}
+  </Button>
+);
 
-const filledButtonStyle = {
-  backgroundColor: "black",
-  color: "white",
-  border: "none",
-  padding: "8px 16px",
-  fontSize: "16px",
-  fontWeight: "bold",
-  cursor: "pointer",
-  borderRadius: "5px",
-  transition: "all 0.3s ease",
-};
 
 export default Navbar;

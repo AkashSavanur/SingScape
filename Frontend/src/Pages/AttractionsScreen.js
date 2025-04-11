@@ -280,8 +280,12 @@ export default function AttractionsScreen() {
   };
 
   const handleSubmitReview = async () => {
-    if (!reviewText || reviewRating < 1) {
-      alert("Please enter both a rating and a review comment.");
+    if (reviewRating < 1) {
+      Swal.fire(
+        "Error",
+        "Please enter a rating.",
+        "error"
+      );
       return;
     }
 
@@ -323,7 +327,7 @@ export default function AttractionsScreen() {
         console.error("Failed to submit review", response.status, errorText);
         Swal.fire(
           "Error",
-          "Please enter both a rating and a review comment.",
+          "Not ablt to submit review",
           "error"
         );
       }
@@ -775,6 +779,17 @@ export default function AttractionsScreen() {
           </CardContent>
         </Card>
       </Box>
+      <footer
+        style={{
+          backgroundColor: "#00002a",
+          color: "white",
+          textAlign: "center",
+          padding: "16px",
+          fontSize: "14px",
+        }}
+      >
+        &copy; 2025 SingScape. Created by Group FDAC - SC2006.
+      </footer>
     </div>
   );
 }

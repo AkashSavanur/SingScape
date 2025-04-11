@@ -161,6 +161,17 @@ export default function HawkerCentreScreen() {
           </Grid>
         )}
       </Container>
+      <footer
+        style={{
+          backgroundColor: "#00002a",
+          color: "white",
+          textAlign: "center",
+          padding: "16px",
+          fontSize: "14px",
+        }}
+      >
+        &copy; 2025 SingScape. Created by Group FDAC - SC2006.
+      </footer>
     </div>
   );
 }
