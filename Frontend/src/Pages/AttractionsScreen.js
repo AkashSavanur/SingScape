@@ -16,6 +16,9 @@ import {
 import supabase from "../helper/SupabaseClient";
 import Swal from "sweetalert2";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
+import RestaurantIcon from '@mui/icons-material/Restaurant';
+import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
+import LocalAtmIcon from '@mui/icons-material/LocalAtm';
 
 export default function AttractionsScreen() {
   const { attractionId } = useParams();
@@ -425,34 +428,37 @@ export default function AttractionsScreen() {
                 </Typography>
                 <Button
                   variant="outlined"
-                  color="secondary"
+                  color="info"
                   onClick={() => {
                     navigate("/hawker-centres", {
                       state: { postalCode: attraction.postal },
                     });
                   }}
+                  startIcon = {<RestaurantIcon />}
                 >
                   Hawker Centres
                 </Button>
                 <Button
                   variant="outlined"
-                  color="secondary"
+                  color="info"
                   onClick={() => {
                     navigate("/nearby-healthcare", {
                       state: { postalCode: attraction.postal },
                     });
                   }}
+                  startIcon = {<LocalHospitalIcon />}
                 >
                   Clinics/Hospitals
                 </Button>
                 <Button
                   variant="outlined"
-                  color="secondary"
+                  color="info"
                   onClick={() => {
                     navigate("/nearby-atms", {
                       state: { postalCode: attraction.postal },
                     });
                   }}
+                  startIcon = {<LocalAtmIcon />}
                 >
                   ATMs
                 </Button>

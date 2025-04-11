@@ -2,11 +2,24 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import supabase from "../helper/SupabaseClient";
 import Swal from "sweetalert2";
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  Container,
+  CircularProgress,
+  Grid,
+  Divider,
+  TextField,
+  Button,
+} from "@mui/material";
+
 
 const Navbar = () => {
   const navigate = useNavigate();
-  const [authUser, setAuthUser] = useState(null); 
-  const [profile, setProfile] = useState(null);  
+  const [authUser, setAuthUser] = useState(null);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -26,7 +39,7 @@ const Navbar = () => {
           });
           if (res.ok) {
             const profileData = await res.json();
-            console.log("data" + profileData.is_admin)
+            console.log("data" + profileData.is_admin);
             setProfile(profileData);
           } else {
             console.error("Failed to fetch profile");
@@ -88,8 +101,12 @@ const Navbar = () => {
       await supabase.auth.signOut();
       setAuthUser(null);
       setProfile(null);
-      localStorage.removeItem("access_token")
-      Swal.fire("Signed out!", "You have been successfully signed out.", "success");
+      localStorage.removeItem("access_token");
+      Swal.fire(
+        "Signed out!",
+        "You have been successfully signed out.",
+        "success"
+      );
       navigate("/login");
     }
   };
@@ -120,7 +137,10 @@ const Navbar = () => {
           </button>
         )}
 
-        <button style={buttonStyle} onClick={() => navigate("/customer-support")}>
+        <button
+          style={buttonStyle}
+          onClick={() => navigate("/customer-support")}
+        >
           Customer Support
         </button>
 
