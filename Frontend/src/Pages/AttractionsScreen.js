@@ -177,6 +177,17 @@ export default function AttractionsScreen() {
       return;
     }
 
+    const exceedsQuantity = ticketTypes.some((ticket) => {
+      const selected = selectedTickets[ticket.id] || 0;
+      return selected > ticket.quantity;
+    });
+    
+    if (exceedsQuantity) {
+      alert("You've selected more tickets than available for one or more types.");
+      return;
+    }
+    
+
     const customerName = profile.full_name;
     const email = profile.email;
 
@@ -230,7 +241,7 @@ export default function AttractionsScreen() {
   };
 
   const handleSubmitReview = async () => {
-    if (!reviewText || reviewRating === 0) {
+    if (!reviewText || reviewRating < 1) {
       alert("Please enter both a rating and a review comment.");
       return;
     }
