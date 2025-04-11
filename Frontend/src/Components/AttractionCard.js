@@ -7,8 +7,10 @@ import {
   Typography,
   Button,
   Box,
+  IconButton
 } from "@mui/material";
 import supabase from "../helper/SupabaseClient";
+import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 
 const AttractionCard = ({ attraction }) => {
   const navigate = useNavigate();
@@ -114,20 +116,32 @@ const AttractionCard = ({ attraction }) => {
           Rating: ⭐ {attraction.rating?.toFixed(2)}
         </Typography>
         {minPrice && (
-          <Typography variant="body1" color= "secondary" fontWeight="bold" sx={{ mt: 1 }}>
+          <Typography
+            variant="body1"
+            color="secondary"
+            fontWeight="bold"
+            sx={{ mt: 1 }}
+          >
             From ${minPrice}
           </Typography>
         )}
         <Box sx={{ flexGrow: 1 }} /> {/* pushes button to bottom */}
-        <Button
-          variant="contained"
-          color="primary"
-          sx={{ mt: 2 }}
-          fullWidth
-          onClick={handleBooking}
+        <Box
+          display="flex"
+          justifyContent="flex-end"
+          alignItems="center"
+          sx={{ mt: 1 }}
         >
-          View Details
-        </Button>
+          <Button
+            color="primary"
+            onClick={handleBooking}
+            sx={{ alignSelf: "flex-end" }}
+            aria-label="View Details"
+            endIcon={<ArrowForwardIosIcon />}
+          >
+            View
+          </Button>
+        </Box>
       </CardContent>
     </Card>
   );
