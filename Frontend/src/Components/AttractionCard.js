@@ -44,6 +44,35 @@ const AttractionCard = ({ attraction }) => {
     fetchUserProfile();
   }, []);
 
+  const [minPrice, setMinPrice] = useState(null);
+
+  useEffect(() => {
+    const fetchMinTicketPrice = async () => {
+      try {
+        const token = localStorage.getItem("access_token");
+        const res = await fetch(
+          `http://0.0.0.0:8081/ticket-types/${attraction.id}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const prices = data.map((ticket) => parseFloat(ticket.price));
+          setMinPrice(Math.min(...prices).toFixed(2));
+        }
+      } catch (error) {
+        console.error("Error fetching ticket prices:", error);
+      }
+    };
+
+    fetchMinTicketPrice();
+  }, [attraction.id]);
+
   const handleBooking = () => {
     navigate(`/attraction/${attraction.id}`);
   };
@@ -54,7 +83,7 @@ const AttractionCard = ({ attraction }) => {
     <Card
       sx={{
         width: 300,
-        height: 400, 
+        height: 400,
         margin: "16px",
         display: "flex",
         flexDirection: "column",
@@ -62,8 +91,15 @@ const AttractionCard = ({ attraction }) => {
         boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
       }}
     >
-      <CardMedia component="img" height="140" image={imageSrc} alt={attraction.name} />
-      <CardContent sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}>
+      <CardMedia
+        component="img"
+        height="140"
+        image={imageSrc}
+        alt={attraction.name}
+      />
+      <CardContent
+        sx={{ flexGrow: 1, display: "flex", flexDirection: "column" }}
+      >
         <Typography variant="h6" fontWeight="bold">
           {attraction.name}
         </Typography>
@@ -71,14 +107,18 @@ const AttractionCard = ({ attraction }) => {
           {attraction.description}
         </Typography>
         <Typography variant="body2" sx={{ mt: 1 }}>
-          <strong>Type:</strong> {attraction.type} | <strong>Location:</strong> {attraction.location}
+          <strong>Type:</strong> {attraction.type} | <strong>Location:</strong>{" "}
+          {attraction.location}
         </Typography>
         <Typography variant="body2" fontWeight="bold" sx={{ mt: 1 }}>
           Rating: ⭐ {attraction.rating?.toFixed(2)}
         </Typography>
-
+        {minPrice && (
+          <Typography variant="body1" color= "secondary" fontWeight="bold" sx={{ mt: 1 }}>
+            From ${minPrice}
+          </Typography>
+        )}
         <Box sx={{ flexGrow: 1 }} /> {/* pushes button to bottom */}
-
         <Button
           variant="contained"
           color="primary"

@@ -211,14 +211,6 @@ const ManageAttractionsScreen = () => {
                 }
               />
               <TextField
-                label="Rating"
-                size="small"
-                value={newAttraction.rating}
-                onChange={(e) =>
-                  setNewAttraction({ ...newAttraction, rating: e.target.value })
-                }
-              />
-              <TextField
                 label="Description"
                 size="small"
                 value={newAttraction.description}

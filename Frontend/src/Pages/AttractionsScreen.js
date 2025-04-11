@@ -12,13 +12,16 @@ import {
   Rating,
   Stack,
   Divider,
+  IconButton
 } from "@mui/material";
 import supabase from "../helper/SupabaseClient";
 import Swal from "sweetalert2";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import RestaurantIcon from '@mui/icons-material/Restaurant';
-import LocalHospitalIcon from '@mui/icons-material/LocalHospital';
-import LocalAtmIcon from '@mui/icons-material/LocalAtm';
+import RestaurantIcon from "@mui/icons-material/Restaurant";
+import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import LocalAtmIcon from "@mui/icons-material/LocalAtm";
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 export default function AttractionsScreen() {
   const { attractionId } = useParams();
@@ -38,6 +41,29 @@ export default function AttractionsScreen() {
   const [profile, setProfile] = useState(null); // Custom user profile
   const [editingReviewId, setEditingReviewId] = useState(null);
   const [editedReviewText, setEditedReviewText] = useState("");
+  const [editedReviewRating, setEditedReviewRating] = useState(0);
+  const ratingDistribution = {
+    5: 0,
+    4: 0,
+    3: 0,
+    2: 0,
+    1: 0,
+  };
+
+  submittedReviews.forEach((review) => {
+    const rating = review.rating;
+    if (rating >= 1 && rating <= 5) {
+      ratingDistribution[rating]++;
+    }
+  });
+
+  const totalReviews = submittedReviews.length;
+  const ratingPercentages = Object.fromEntries(
+    Object.entries(ratingDistribution).map(([key, count]) => [
+      key,
+      totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0,
+    ])
+  );
 
   useEffect(() => {
     const fetchUserAndProfile = async () => {
@@ -107,6 +133,7 @@ export default function AttractionsScreen() {
         }
       );
       const data = await response.json();
+      console.log(data);
       setSubmittedReviews(data);
     } catch (error) {
       console.error("Error fetching attraction reviews:", error);
@@ -172,8 +199,17 @@ export default function AttractionsScreen() {
       0
     );
 
-    if (!selectedDate || totalTickets === 0) {
-      alert("Please select a date and at least one ticket before proceeding.");
+    if (!selectedDate) {
+      Swal.fire("Error", "Please select a date before proceeding.", "error");
+      return;
+    }
+    if (totalTickets === 0) {
+      alert("Please select at least one ticket before proceeding.");
+      Swal.fire(
+        "Error",
+        "Please select a date and at least one ticket before proceeding.",
+        "error"
+      );
       return;
     }
 
@@ -181,12 +217,15 @@ export default function AttractionsScreen() {
       const selected = selectedTickets[ticket.id] || 0;
       return selected > ticket.quantity;
     });
-    
+
     if (exceedsQuantity) {
-      alert("You've selected more tickets than available for one or more types.");
+      Swal.fire(
+        "Error",
+        "You've selected more tickets than available for one or more types.",
+        "error"
+      );
       return;
     }
-    
 
     const customerName = profile.full_name;
     const email = profile.email;
@@ -278,10 +317,15 @@ export default function AttractionsScreen() {
         setSubmittedReviews((prev) => [...prev, savedReview]);
         setReviewText("");
         setReviewRating(0);
+        Swal.fire("Success", "Review Submitted Successfully", "success");
       } else {
         const errorText = await response.text();
         console.error("Failed to submit review", response.status, errorText);
-        alert("Error submitting review.");
+        Swal.fire(
+          "Error",
+          "Please enter both a rating and a review comment.",
+          "error"
+        );
       }
     } catch (error) {
       console.error("Error submitting review:", error);
@@ -294,6 +338,7 @@ export default function AttractionsScreen() {
   const handleEditReview = (review) => {
     setEditingReviewId(review.id);
     setEditedReviewText(review.text);
+    setEditedReviewRating(review.rating);
   };
 
   const handleSaveReview = async (reviewId) => {
@@ -305,17 +350,23 @@ export default function AttractionsScreen() {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: editedReviewText }),
+        body: JSON.stringify({
+          text: editedReviewText,
+          rating: editedReviewRating,
+        }),
       });
 
       if (response.ok) {
         setSubmittedReviews((prev) =>
           prev.map((r) =>
-            r.id === reviewId ? { ...r, text: editedReviewText } : r
+            r.id === reviewId
+              ? { ...r, text: editedReviewText, rating: editedReviewRating }
+              : r
           )
         );
         setEditingReviewId(null);
         setEditedReviewText("");
+        setEditedReviewRating(0);
       } else {
         alert("Failed to update review.");
       }
@@ -431,6 +482,45 @@ export default function AttractionsScreen() {
                 <Typography variant="body2">
                   <strong>Rating:</strong> ⭐ {attraction.rating?.toFixed(2)}
                 </Typography>
+                <Box mt={1}>
+                  {Object.entries(ratingPercentages)
+                    .sort((a, b) => b[0] - a[0])
+                    .map(([star, percent]) => (
+                      <Box
+                        key={star}
+                        display="flex"
+                        alignItems="center"
+                        mb={0.5}
+                        width="50%"
+                        sx={{fontSize: "10px"}}
+                      >
+                        <Typography
+                          sx={{ width: 30 }}
+                        >{`${star} ⭐`}</Typography>
+                        <Box
+                          sx={{
+                            backgroundColor: "#ddd",
+                            height: 5,
+                            flexGrow: 1,
+                            borderRadius: "5px",
+                            overflow: "hidden",
+                            mx: 1,
+                          }}
+                        >
+                          <Box
+                            sx={{
+                              height: "100%",
+                              width: `${percent}%`,
+                              backgroundColor: "#ffc107",
+                            }}
+                          />
+                        </Box>
+                        <Typography sx={{ width: 30, textAlign: "right" }}>
+                          {percent}%
+                        </Typography>
+                      </Box>
+                    ))}
+                </Box>
               </Box>
 
               <Box flexShrink={0} display="flex" flexDirection="column" gap={1}>
@@ -445,7 +535,7 @@ export default function AttractionsScreen() {
                       state: { postalCode: attraction.postal },
                     });
                   }}
-                  startIcon = {<RestaurantIcon />}
+                  startIcon={<RestaurantIcon />}
                 >
                   Hawker Centres
                 </Button>
@@ -457,7 +547,7 @@ export default function AttractionsScreen() {
                       state: { postalCode: attraction.postal },
                     });
                   }}
-                  startIcon = {<LocalHospitalIcon />}
+                  startIcon={<LocalHospitalIcon />}
                 >
                   Clinics/Hospitals
                 </Button>
@@ -469,7 +559,7 @@ export default function AttractionsScreen() {
                       state: { postalCode: attraction.postal },
                     });
                   }}
-                  startIcon = {<LocalAtmIcon />}
+                  startIcon={<LocalAtmIcon />}
                 >
                   ATMs
                 </Button>
@@ -579,6 +669,14 @@ export default function AttractionsScreen() {
 
                     {editingReviewId === review.id ? (
                       <Box>
+                        <Rating
+                          name={`edit-rating-${review.id}`}
+                          value={editedReviewRating}
+                          onChange={(_, newValue) =>
+                            setEditedReviewRating(newValue)
+                          }
+                          sx={{ mt: 1 }}
+                        />
                         <TextField
                           fullWidth
                           multiline
@@ -600,6 +698,7 @@ export default function AttractionsScreen() {
                             onClick={() => {
                               setEditingReviewId(null);
                               setEditedReviewText("");
+                              setEditedReviewRating(0);
                             }}
                           >
                             Cancel
@@ -608,31 +707,31 @@ export default function AttractionsScreen() {
                       </Box>
                     ) : (
                       <>
-                        <Typography variant="body2" color="textSecondary">
+                        <Typography variant="body1" color="textSecondary">
+                          {"⭐".repeat(review.rating)}
+                        </Typography>
+                        <Typography variant="body1" color="textSecondary">
                           {review.flagged ? "⚠️ (Flagged) " : ""}
                           {review.text}
                         </Typography>
-                        <Typography variant="body2" color="textSecondary">
-                          {review.flagged ? "⚠️ (Flagged) " : ""}⭐{" "}
-                          {review.rating}
-                        </Typography>
                         {isOwnReview && (
                           <Box display="flex" gap={1} mt={1}>
-                            <Button
+                            <IconButton
                               size="small"
-                              variant="text"
+                              variant="contained"
+                              color="info"
                               onClick={() => handleEditReview(review)}
                             >
-                              Edit
-                            </Button>
-                            <Button
+                              <EditIcon />
+                            </IconButton>
+                            <IconButton
                               size="small"
-                              variant="text"
+                              variant="contained"
                               color="error"
                               onClick={() => handleDeleteReview(review.id)}
                             >
-                              Delete
-                            </Button>
+                              <DeleteIcon />
+                            </IconButton>
                           </Box>
                         )}
                       </>
