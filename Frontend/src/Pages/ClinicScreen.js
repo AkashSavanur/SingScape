@@ -13,7 +13,9 @@ import {
   Button,
 } from "@mui/material";
 import Navbar from "../Components/Navbar";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import aiLoadingAnimation from "../assets/ai-loader.json";
+import Lottie from "lottie-react";
 
 export default function ClinicScreen() {
   const location = useLocation();
@@ -42,7 +44,7 @@ export default function ClinicScreen() {
 
       if (!res.ok) throw new Error("Failed to fetch clinics");
       const data = await res.json();
-      console.log(data)
+      console.log(data);
       setClinics(data);
     } catch (err) {
       console.error("Error fetching clinics:", err.message);
@@ -65,7 +67,9 @@ export default function ClinicScreen() {
   };
 
   return (
-    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <div
+      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
+    >
       <Navbar />
       <Container sx={{ py: 5, flex: 1 }}>
         <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -91,9 +95,19 @@ export default function ClinicScreen() {
         </Typography>
 
         {loading ? (
-          <Box display="flex" justifyContent="center" mt={4}>
-            <CircularProgress />
-          </Box>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Lottie
+              animationData={aiLoadingAnimation}
+              loop={true}
+              style={{ width: 300 }}
+            />
+          </div>
         ) : clinics.length === 0 ? (
           <Typography>No clinics found nearby.</Typography>
         ) : (
@@ -109,10 +123,10 @@ export default function ClinicScreen() {
                       Rating: {clinic.rating}
                     </Typography>
                     <Box display="flex" alignItems="center" gap={1}>
-                    <Typography variant="body2" color="textSecondary">
-                      Location: {clinic.vicinity}
-                    </Typography>
-                    <Button
+                      <Typography variant="body2" color="textSecondary">
+                        Location: {clinic.vicinity}
+                      </Typography>
+                      <Button
                         size="small"
                         variant="outlined"
                         color="primary"
@@ -124,7 +138,7 @@ export default function ClinicScreen() {
                       >
                         View on Map
                       </Button>
-                      </Box>
+                    </Box>
                     <Divider sx={{ my: 1 }} />
                   </CardContent>
                 </Card>

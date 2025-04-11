@@ -88,6 +88,7 @@ const Navbar = () => {
       await supabase.auth.signOut();
       setAuthUser(null);
       setProfile(null);
+      localStorage.removeItem("access_token")
       Swal.fire("Signed out!", "You have been successfully signed out.", "success");
       navigate("/login");
     }

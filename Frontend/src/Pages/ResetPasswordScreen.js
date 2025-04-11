@@ -1,138 +1,123 @@
 import React, { useEffect, useState } from "react";
 import { TextField, Button, Typography, Paper } from "@mui/material";
-import { useNavigate, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 import supabase from "../helper/SupabaseClient";
+import Navbar from "../Components/Navbar";
 
 export default function ResetPasswordScreen() {
   const navigate = useNavigate();
-  const location = useLocation();
 
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
-    const params = new URLSearchParams(location.search);
-    const emailFromURL = params.get("email") || "";
-    const access_token = localStorage.getItem("access_token");
-    const refresh_token = localStorage.getItem("refresh_token");
+    const hash = window.location.hash;
+    if (hash.includes("access_token")) {
+      const params = new URLSearchParams(hash.replace("#", "?"));
+      const access_token = params.get("access_token");
+      const refresh_token = params.get("refresh_token");
 
-    if (access_token && refresh_token) {
-      supabase.auth
-        .setSession({ access_token, refresh_token })
-        .then(({ error }) => {
-          if (error) {
-            console.error("Session error:", error.message);
-            setMessage(
-              "Unable to verify session. Please retry from the reset link."
-            );
-          }
-        });
+      if (access_token && refresh_token) {
+        supabase.auth
+          .setSession({ access_token, refresh_token })
+          .then(({ error }) => {
+            if (error) {
+              console.error("Session error:", error.message);
+              setErrorMsg(
+                "Session verification failed. Please retry the link."
+              );
+            }
+            setLoading(false);
+          });
+      } else {
+        setErrorMsg("Invalid reset link.");
+        setLoading(false);
+      }
     } else {
-      setMessage("Invalid or expired reset link.");
+      setErrorMsg("Invalid or expired reset link.");
+      setLoading(false);
     }
-  }, [location.hash]);
+  }, []);
 
   const handleReset = async () => {
     if (newPassword !== confirmPassword) {
-      setMessage("Passwords do not match.");
+      setErrorMsg("Passwords do not match.");
       return;
     }
 
-    const { error } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
 
     if (error) {
-      setMessage(error.message);
+      setErrorMsg(error.message);
     } else {
       Swal.fire({
-        title: "Success!",
-        text: "Your password has been updated.",
+        title: "Password Updated",
+        text: "Your password has been successfully changed.",
         icon: "success",
         confirmButtonText: "Go to Login",
       }).then(() => navigate("/login"));
     }
   };
 
+  if (loading)
+    return (
+      <p style={{ textAlign: "center", marginTop: "50px" }}>
+        Verifying reset session...
+      </p>
+    );
+
   return (
     <div
-      style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}
     >
-      <header
+      <Navbar />
+      <Paper
+        elevation={3}
         style={{
-          backgroundColor: "#fff",
-          color: "black",
-          textAlign: "center",
-          padding: "16px",
-          fontSize: "36px",
-          fontWeight: "bold",
-          cursor: "pointer",
-        }}
-        onClick={() => navigate("/home")}
-      >
-        SingScape
-      </header>
-
-      <main
-        style={{
-          flex: 1,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#f4f4f4",
           padding: "24px",
+          maxWidth: "400px",
+          margin: "auto",
+          marginTop: "100px",
         }}
       >
-        <Paper
-          elevation={3}
-          style={{
-            padding: "24px",
-            maxWidth: "400px",
-            width: "100%",
-            textAlign: "center",
-          }}
+        <Typography variant="h5" gutterBottom>
+          Reset Password
+        </Typography>
+        <TextField
+          label="New Password"
+          type="password"
+          fullWidth
+          margin="normal"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+        />
+        <TextField
+          label="Confirm Password"
+          type="password"
+          fullWidth
+          margin="normal"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+        />
+        <Button
+          variant="contained"
+          color="primary"
+          fullWidth
+          style={{ marginTop: "16px" }}
+          onClick={handleReset}
+          disabled={!newPassword || !confirmPassword}
         >
-          <Typography variant="h5" gutterBottom>
-            Reset Password
+          Reset Password
+        </Button>
+        {errorMsg && (
+          <Typography color="error" style={{ marginTop: "16px" }}>
+            {errorMsg}
           </Typography>
-
-          <TextField
-            label="New Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-          <TextField
-            label="Confirm Password"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth
-            style={{ marginTop: "16px" }}
-            onClick={handleReset}
-            disabled={!newPassword || !confirmPassword}
-          >
-            Reset Password
-          </Button>
-
-          {message && (
-            <Typography color="error" style={{ marginTop: "16px" }}>
-              {message}
-            </Typography>
-          )}
-        </Paper>
-      </main>
-
+        )}
+      </Paper>
       <footer
         style={{
           backgroundColor: "#00002a",

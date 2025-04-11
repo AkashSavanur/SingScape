@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import supabase from "../helper/SupabaseClient";
 import Swal from "sweetalert2";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import LocationOnIcon from "@mui/icons-material/LocationOn";
 
 export default function AttractionsScreen() {
   const { attractionId } = useParams();
@@ -285,17 +285,14 @@ export default function AttractionsScreen() {
   const handleSaveReview = async (reviewId) => {
     try {
       const token = localStorage.getItem("access_token");
-      const response = await fetch(
-        `http://0.0.0.0:8081/reviews/${reviewId}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ text: editedReviewText }),
-        }
-      );
+      const response = await fetch(`http://0.0.0.0:8081/reviews/${reviewId}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ text: editedReviewText }),
+      });
 
       if (response.ok) {
         setSubmittedReviews((prev) =>
@@ -380,47 +377,87 @@ export default function AttractionsScreen() {
             alt={attraction.name}
           />
           <CardContent>
-            <Typography variant="h5" fontWeight="bold">
-              {attraction.name}
-            </Typography>
-            <Typography
-              variant="body1"
-              color="textSecondary"
-              sx={{ margin: "8px 0" }}
-            >
-              {attraction.description}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Type:</strong> {attraction.type}
-            </Typography>
+            <Box display="flex" gap={2} flexWrap="wrap">
+              <Box flex={1} minWidth="300px">
+                <Typography variant="h5" fontWeight="bold">
+                  {attraction.name}
+                </Typography>
+                <Typography
+                  variant="body1"
+                  color="textSecondary"
+                  sx={{ margin: "8px 0" }}
+                >
+                  {attraction.description}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Type:</strong> {attraction.type}
+                </Typography>
+                <Box display="flex" alignItems="center" gap={1}>
+                  <Typography variant="body2">
+                    <strong>Location:</strong> {attraction.location}
+                  </Typography>
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                      attraction.location
+                    )}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    sx={{ textTransform: "none", fontSize: "0.75rem" }}
+                    startIcon={<LocationOnIcon />}
+                  >
+                    View on Map
+                  </Button>
+                </Box>
+                <Typography variant="body2">
+                  <strong>Postal:</strong> {attraction.postal}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Rating:</strong> ⭐ {attraction.rating?.toFixed(2)}
+                </Typography>
+              </Box>
 
-            {/* Location + Google Maps Button */}
-            <Box display="flex" alignItems="center" gap={1}>
-              <Typography variant="body2">
-                <strong>Location:</strong> {attraction.location}
-              </Typography>
-              <Button
-                size="small"
-                variant="outlined"
-                color="primary"
-                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                  attraction.location
-                )}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                sx={{ textTransform: "none", fontSize: "0.75rem" }}
-                startIcon={<LocationOnIcon />}
-              >
-                View on Map
-              </Button>
+              <Box flexShrink={0} display="flex" flexDirection="column" gap={1}>
+                <Typography variant="h6" sx={{ marginBottom: "8px" }}>
+                  <strong>Facilities Nearby</strong>
+                </Typography>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    navigate("/hawker-centres", {
+                      state: { postalCode: attraction.postal },
+                    });
+                  }}
+                >
+                  Hawker Centres
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    navigate("/nearby-healthcare", {
+                      state: { postalCode: attraction.postal },
+                    });
+                  }}
+                >
+                  Clinics/Hospitals
+                </Button>
+                <Button
+                  variant="outlined"
+                  color="secondary"
+                  onClick={() => {
+                    navigate("/nearby-atms", {
+                      state: { postalCode: attraction.postal },
+                    });
+                  }}
+                >
+                  ATMs
+                </Button>
+              </Box>
             </Box>
-
-            <Typography variant="body2">
-              <strong>Postal:</strong> {attraction.postal}
-            </Typography>
-            <Typography variant="body2">
-              <strong>Rating:</strong> ⭐ {attraction.rating?.toFixed(2)}
-            </Typography>
 
             <Typography variant="h6" sx={{ marginTop: "24px" }}>
               Select Date:
@@ -618,47 +655,6 @@ export default function AttractionsScreen() {
               >
                 Submit Review
               </Button>
-            </Box>
-            <Box sx={{ marginTop: "24px" }}>
-              <Typography variant="h6" sx={{marginBottom: "16px"}}>Facilities Nearby</Typography>
-              <Stack direction="row" spacing={1}>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  sx={{ marginTop: "8px" }}
-                  onClick={() => {
-                    navigate("/hawker-centres", {
-                      state: { postalCode: attraction.postal },
-                    });
-                  }}
-                >
-                  Hawker Centres
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  sx={{ marginTop: "8px" }}
-                  onClick={() => {
-                    navigate("/nearby-healthcare", {
-                      state: { postalCode: attraction.postal },
-                    });
-                  }}
-                >
-                  Clinics/Hospitals
-                </Button>
-                <Button
-                  variant="outlined"
-                  color="secondary"
-                  sx={{ marginTop: "8px" }}
-                  onClick={() => {
-                    navigate("/nearby-atms", {
-                      state: { postalCode: attraction.postal },
-                    });
-                  }}
-                >
-                  ATM's
-                </Button>
-              </Stack>
             </Box>
           </CardContent>
         </Card>

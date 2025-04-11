@@ -13,7 +13,9 @@ import {
   Button,
 } from "@mui/material";
 import Navbar from "../Components/Navbar";
-import LocationOnIcon from '@mui/icons-material/LocationOn';
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import aiLoadingAnimation from "../assets/ai-loader.json";
+import Lottie from "lottie-react";
 
 export default function HawkerCentreScreen() {
   const location = useLocation();
@@ -42,7 +44,7 @@ export default function HawkerCentreScreen() {
 
       if (!res.ok) throw new Error("Failed to fetch hawker centres");
       const data = await res.json();
-      console.log(data)
+      console.log(data);
       setCentres(data);
     } catch (err) {
       console.error("Error fetching hawker centres:", err.message);
@@ -93,9 +95,19 @@ export default function HawkerCentreScreen() {
         </Typography>
 
         {loading ? (
-          <Box display="flex" justifyContent="center" mt={4}>
-            <CircularProgress />
-          </Box>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Lottie
+              animationData={aiLoadingAnimation}
+              loop={true}
+              style={{ width: 300 }}
+            />
+          </div>
         ) : centres.length === 0 ? (
           <Typography>No hawker centres found nearby.</Typography>
         ) : (

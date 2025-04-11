@@ -9,6 +9,7 @@ import supabase from "./helper/SupabaseClient";
 import LandingScreen from "./Pages/LandingScreen";
 import SignUpScreen from "./Pages/SignUpScreen";
 import LoginScreen from "./Pages/LoginScreen";
+import ForgotPasswordScreen from "./Pages/ForgotPasswordScreen";
 import ResetPasswordScreen from "./Pages/ResetPasswordScreen";
 import HomeScreen from "./Pages/HomeScreen";
 import UniversalStudiosScreen from "./Pages/UniversalStudiosScreen";
@@ -140,6 +141,7 @@ function App() {
         <Route path="/" element={<LandingScreen />} />
         <Route path="/signup" element={<SignUpScreen />} />
         <Route path="/login" element={<LoginScreen />} />
+        <Route path="/forgot-password" element={<ForgotPasswordScreen />} />
         <Route path="/reset-password" element={<ResetPasswordScreen />} />
         <Route
           path="/home"

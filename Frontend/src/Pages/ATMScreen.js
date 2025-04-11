@@ -14,6 +14,8 @@ import {
 } from "@mui/material";
 import Navbar from "../Components/Navbar";
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import aiLoadingAnimation from "../assets/ai-loader.json";
+import Lottie from "lottie-react";
 
 export default function ATMScreen() {
   const location = useLocation();
@@ -90,9 +92,19 @@ export default function ATMScreen() {
         </Typography>
 
         {loading ? (
-          <Box display="flex" justifyContent="center" mt={4}>
-            <CircularProgress />
-          </Box>
+          <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Lottie
+            animationData={aiLoadingAnimation}
+            loop={true}
+            style={{ width: 300 }}
+          />
+        </div>
         ) : atms.length === 0 ? (
           <Typography>No ATMs found nearby.</Typography>
         ) : (

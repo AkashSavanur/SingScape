@@ -215,7 +215,7 @@ export default function LoginScreen() {
               variant="contained"
               color="secondary"
               onClick={() =>
-                navigate(`/reset-password?email=${formData.email}`)
+                navigate(`/forgot-password`)
               }
             >
               Forgot Password?
