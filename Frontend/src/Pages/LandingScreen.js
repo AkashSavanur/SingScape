@@ -21,47 +21,73 @@ export default function LandingScreen() {
       </header>
 
       <main
-        style={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
-          backgroundColor: "#f4f4f4",
-          padding: "24px",
-        }}
-      >
-        <div style={{ display: "flex", gap: "16px", marginBottom: "20px" }}>
-          <Button
-            variant="contained"
-            size="large"
-            style={{
-              backgroundColor: "#1976D2",
-              color: "#fff",
-              padding: "12px 24px",
-              fontSize: "16px",
-              borderRadius: "8px",
-            }}
-            onClick={() => navigate("/login")}
-          >
-            Log In
-          </Button>
-          <Button
-            variant="contained"
-            size="large"
-            style={{
-              backgroundColor: "#fff",
-              color: "#000",
-              padding: "12px 24px",
-              fontSize: "16px",
-              borderRadius: "8px",
-            }}
-            onClick={() => navigate("/signup")}
-          >
-            Sign Up
-          </Button>
-        </div>
-      </main>
+  style={{
+    flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundImage: "url('/Images/tourism.jpeg')", // replace with your image path
+    backgroundSize: "cover",
+    backgroundPosition: "center",
+    backgroundRepeat: "no-repeat",
+    padding: "24px",
+    position: "relative",
+  }}
+>
+  <div
+    style={{
+      backgroundColor: "rgba(255, 255, 255, 0.85)",
+      padding: "32px",
+      borderRadius: "12px",
+      boxShadow: "0px 4px 12px rgba(0, 0, 0, 0.2)",
+    }}
+  >
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: "16px",
+      }}
+    >
+      <h1 style={{ marginBottom: "8px", fontSize: "32px" }}>
+        Welcome to SingScape
+      </h1>
+      <div style={{ display: "flex", gap: "16px" }}>
+        <Button
+          variant="contained"
+          size="large"
+          style={{
+            backgroundColor: "#1976D2",
+            color: "#fff",
+            padding: "12px 24px",
+            fontSize: "16px",
+            borderRadius: "8px",
+          }}
+          onClick={() => navigate("/login")}
+        >
+          Log In
+        </Button>
+        <Button
+          variant="contained"
+          size="large"
+          style={{
+            backgroundColor: "#fff",
+            color: "#000",
+            padding: "12px 24px",
+            fontSize: "16px",
+            borderRadius: "8px",
+          }}
+          onClick={() => navigate("/signup")}
+        >
+          Sign Up
+        </Button>
+      </div>
+    </div>
+  </div>
+</main>
+
       <footer
         style={{
           backgroundColor: "#00002a",

@@ -148,7 +148,7 @@ export default function LoginScreen() {
           fontWeight: "bold",
           cursor: "pointer",
         }}
-        onClick={() => navigate("/home")}
+        onClick={() => navigate("/")}
       >
         SingScape
       </header>

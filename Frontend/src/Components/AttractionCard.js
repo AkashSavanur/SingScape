@@ -7,7 +7,7 @@ import {
   Typography,
   Button,
   Box,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import supabase from "../helper/SupabaseClient";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
@@ -91,6 +91,11 @@ const AttractionCard = ({ attraction }) => {
         flexDirection: "column",
         justifyContent: "space-between",
         boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+        transition: "transform 0.3s ease, box-shadow 0.3s ease",
+        "&:hover": {
+          transform: "translateY(-8px)",
+          boxShadow: "0px 10px 20px rgba(0,0,0,0.2)",
+        },
       }}
     >
       <CardMedia

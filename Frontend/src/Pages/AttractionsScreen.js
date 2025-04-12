@@ -12,7 +12,7 @@ import {
   Rating,
   Stack,
   Divider,
-  IconButton
+  IconButton,
 } from "@mui/material";
 import supabase from "../helper/SupabaseClient";
 import Swal from "sweetalert2";
@@ -20,8 +20,10 @@ import LocationOnIcon from "@mui/icons-material/LocationOn";
 import RestaurantIcon from "@mui/icons-material/Restaurant";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import LocalAtmIcon from "@mui/icons-material/LocalAtm";
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from "@mui/icons-material/Edit";
+import DeleteIcon from "@mui/icons-material/Delete";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
+
 
 export default function AttractionsScreen() {
   const { attractionId } = useParams();
@@ -281,11 +283,7 @@ export default function AttractionsScreen() {
 
   const handleSubmitReview = async () => {
     if (reviewRating < 1) {
-      Swal.fire(
-        "Error",
-        "Please enter a rating.",
-        "error"
-      );
+      Swal.fire("Error", "Please enter a rating.", "error");
       return;
     }
 
@@ -325,11 +323,7 @@ export default function AttractionsScreen() {
       } else {
         const errorText = await response.text();
         console.error("Failed to submit review", response.status, errorText);
-        Swal.fire(
-          "Error",
-          "Not ablt to submit review",
-          "error"
-        );
+        Swal.fire("Error", "Not ablt to submit review", "error");
       }
     } catch (error) {
       console.error("Error submitting review:", error);
@@ -405,6 +399,7 @@ export default function AttractionsScreen() {
 
         if (response.ok) {
           setSubmittedReviews((prev) => prev.filter((r) => r.id !== reviewId));
+          Swal.fire("Success", "Review deleted successfully", "success");
         } else {
           alert("Failed to delete review.");
         }
@@ -414,6 +409,31 @@ export default function AttractionsScreen() {
     }
     fetchAttractionData();
   };
+
+  const handleFlagReview = async (reviewId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      const response = await fetch(`http://0.0.0.0:8081/reviews/${reviewId}/flag`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ flagged: true }),
+      });
+  
+      if (response.ok) {
+        setSubmittedReviews((prev) =>
+          prev.map((r) => (r.id === reviewId ? { ...r, flagged: true } : r))
+        );
+      } else {
+        alert("Failed to flag review.");
+      }
+    } catch (err) {
+      console.error("Error flagging review:", err);
+    }
+  };
+  
 
   if (!attraction) return <p>Loading...</p>;
 
@@ -496,7 +516,7 @@ export default function AttractionsScreen() {
                         alignItems="center"
                         mb={0.5}
                         width="50%"
-                        sx={{fontSize: "10px"}}
+                        sx={{ fontSize: "10px" }}
                       >
                         <Typography
                           sx={{ width: 30 }}
@@ -718,26 +738,36 @@ export default function AttractionsScreen() {
                           {review.flagged ? "⚠️ (Flagged) " : ""}
                           {review.text}
                         </Typography>
-                        {isOwnReview && (
-                          <Box display="flex" gap={1} mt={1}>
-                            <IconButton
-                              size="small"
-                              variant="contained"
-                              color="info"
-                              onClick={() => handleEditReview(review)}
-                            >
-                              <EditIcon />
-                            </IconButton>
-                            <IconButton
-                              size="small"
-                              variant="contained"
-                              color="error"
-                              onClick={() => handleDeleteReview(review.id)}
-                            >
-                              <DeleteIcon />
-                            </IconButton>
-                          </Box>
-                        )}
+                        <Box display="flex" gap={1} mt={1}>
+                          {isOwnReview ? (
+                            <>
+                              <IconButton
+                                size="small"
+                                color="info"
+                                onClick={() => handleEditReview(review)}
+                              >
+                                <EditIcon />
+                              </IconButton>
+                              <IconButton
+                                size="small"
+                                color="error"
+                                onClick={() => handleDeleteReview(review.id)}
+                              >
+                                <DeleteIcon />
+                              </IconButton>
+                            </>
+                          ) : (
+                            !review.flagged && (
+                              <IconButton
+                                size="small"
+                                color="warning"
+                                onClick={() => handleFlagReview(review.id)}
+                              >
+                                <ReportProblemIcon />
+                              </IconButton>
+                            )
+                          )}
+                        </Box>
                       </>
                     )}
                   </Box>
